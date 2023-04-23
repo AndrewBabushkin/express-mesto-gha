@@ -14,7 +14,7 @@ const errorMessageServer = {
 };
 
 const handleError = (err, res) => {
-  console.log(err.name);
+  // console.log(err.name);
   if (err.name === 'ValidationError') {
     return res.status(ERROR_CODE).send(errorMessage);
   }
