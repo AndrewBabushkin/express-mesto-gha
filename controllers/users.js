@@ -1,5 +1,10 @@
 const User = require('../models/user');
-const { handleError, CheckUserId } = require('../errors/errors');
+const {
+  ERROR_CODE,
+  errorMessage,
+  handleError,
+  CheckUserId,
+} = require('../errors/errors');
 
 const createUser = (req, res) => {
   // console.log(req.body);
@@ -8,7 +13,11 @@ const createUser = (req, res) => {
 
   User.create({ name, about, avatar })
     .then((newUser) => {
-      res.send(newUser);
+      // console.log(name);
+      if (name || about || avatar === undefined) {
+        return res.status(ERROR_CODE).send(errorMessage);
+      }
+      return res.send(newUser);
     })
     .catch((err) => {
       handleError(err, res);
@@ -46,7 +55,7 @@ const updateProfile = (req, res) => {
   User.findByIdAndUpdate(
     userId,
     { name, about },
-    { new: true, runValidators: true },
+    { new: true, runValidators: true }
   )
     .then((user) => {
       // console.log(user);

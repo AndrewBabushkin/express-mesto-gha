@@ -1,5 +1,10 @@
 const Card = require('../models/card');
-const { handleError, CheckUserId } = require('../errors/errors');
+const {
+  ERROR_CODE,
+  errorMessage,
+  handleError,
+  CheckUserId,
+} = require('../errors/errors');
 
 const getCards = (req, res) => {
   Card.find({})
@@ -20,7 +25,10 @@ const createCard = (req, res) => {
 
   Card.create({ name, link, owner: userId })
     .then((newCard) => {
-      res.send(newCard);
+      if (name || link === undefined) {
+        return res.status(ERROR_CODE).send(errorMessage);
+      }
+      return res.send(newCard);
       // console.log(newCard);
     })
     .catch((err) => {

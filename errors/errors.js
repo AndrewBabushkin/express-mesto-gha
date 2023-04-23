@@ -34,4 +34,9 @@ const CheckUserId = (user, res) => {
   return res.status(SUCCESS_RESPONSE_CODE).send(user);
 };
 
-module.exports = { SUCCESS_RESPONSE_CODE, handleError, CheckUserId };
+module.exports = {
+  ERROR_CODE,
+  errorMessage,
+  handleError,
+  CheckUserId,
+};
