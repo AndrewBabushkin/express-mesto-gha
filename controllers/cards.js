@@ -25,7 +25,7 @@ const createCard = (req, res) => {
 
   Card.create({ name, link, owner: userId })
     .then((newCard) => {
-      if (name || link === undefined) {
+      if (!newCard.name || !newCard.link) {
         return res.status(ERROR_CODE).send(errorMessage);
       }
       return res.send(newCard);

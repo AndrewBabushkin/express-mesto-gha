@@ -13,8 +13,8 @@ const createUser = (req, res) => {
 
   User.create({ name, about, avatar })
     .then((newUser) => {
-      // console.log(name);
-      if (name || about || avatar === undefined) {
+      // console.log(newUser.name);
+      if ((!newUser.name || !newUser.about || !newUser.avatar)) {
         return res.status(ERROR_CODE).send(errorMessage);
       }
       return res.send(newUser);
@@ -55,7 +55,7 @@ const updateProfile = (req, res) => {
   User.findByIdAndUpdate(
     userId,
     { name, about },
-    { new: true, runValidators: true }
+    { new: true, runValidators: true },
   )
     .then((user) => {
       // console.log(user);

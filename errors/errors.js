@@ -9,6 +9,9 @@ const errorMessage = {
 const errorMessageNotFound = {
   message: 'Информация по указанному _id не найдена.',
 };
+const errorMessagePageNotFound = {
+  message: 'Информация по указанному _id не найдена.',
+};
 const errorMessageServer = {
   message: 'Произошла ошибка.',
 };
@@ -37,6 +40,8 @@ const CheckUserId = (user, res) => {
 module.exports = {
   ERROR_CODE,
   errorMessage,
+  ERROR_NOT_FOUND_CODE,
+  errorMessagePageNotFound,
   handleError,
   CheckUserId,
 };
