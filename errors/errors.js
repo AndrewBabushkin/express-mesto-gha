@@ -13,7 +13,7 @@ const errorMessagePageNotFound = {
   message: 'Информация по указанному _id не найдена.',
 };
 const errorMessageServer = {
-  message: 'Произошла ошибка.',
+  message: 'На сервере произошла ошибка.',
 };
 
 const handleError = (err, res) => {
