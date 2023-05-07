@@ -31,8 +31,8 @@ const createUser = (req, res, next) => {
       password: hash,
     }))
     .then((newUser) => {
-      // console.log(newUser);
-      res.send({
+      console.log(newUser);
+      res.status(200).send({
         user: {
           email: newUser.email,
           name: newUser.name,
@@ -42,7 +42,7 @@ const createUser = (req, res, next) => {
       });
     })
     .catch((err) => {
-      // console.log(err.name);
+      console.log(err.code);
       if (err.code === 11000) {
         next(
           new EmailExistsError(
