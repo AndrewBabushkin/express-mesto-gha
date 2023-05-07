@@ -1,13 +1,19 @@
 const router = require('express').Router();
 
+const PageNotFoundError = require('../errors/PageNotFoundError');
+
 const userRouter = require('./users');
 const cardRouter = require('./cards');
-const { ERROR_NOT_FOUND_CODE, errorMessagePageNotFound } = require('../errors/errors');
+const loginRouter = require('./signin');
+const regRouter = require('./singup');
+const auth = require('../middlewares/auth');
 
-router.use('/users', userRouter);
-router.use('/cards', cardRouter);
+router.use('/users', auth, userRouter);
+router.use('/cards', auth, cardRouter);
+router.use('/signup', regRouter);
+router.use('/signin', loginRouter);
 
-router.patch('*', (req, res) => {
-  res.status(ERROR_NOT_FOUND_CODE).send(errorMessagePageNotFound);
+router.all('*', (req, res, next) => {
+  next(new PageNotFoundError('Страница не найдена!'));
 });
 module.exports = router;
