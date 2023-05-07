@@ -29,6 +29,11 @@ app.use(helmet());
 app.use(errors());
 app.use(errorHandler);
 
+app.use((err, req, res, next) => {
+  res.status(err.statusCode).send({ message: err.message });
+  next()
+});
+
 app.listen(PORT, () => {
   console.log('start server');
 });
