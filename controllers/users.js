@@ -67,14 +67,14 @@ const login = (req, res, next) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: '7d',
       });
-      res.send({ token });
+      res.status(200).send({ token });
     })
     .catch(next);
 };
 const getUsers = (req, res, next) => {
   User.find({})
     .then((users) => {
-      res.send(users);
+      res.status(200).send(users);
     })
     .catch(next);
 };
@@ -89,7 +89,7 @@ const getUserId = (req, res, next) => {
           'Пользователь по указанному _id не найден.',
         );
       }
-      res.send(user);
+      res.status(200).send(user);
     })
     .catch((err) => {
       // console.log(err.name);
@@ -100,7 +100,7 @@ const getUserId = (req, res, next) => {
     });
 };
 const getCurrentUser = (req, res, next) => {
-  const { userId } = req.user;
+  const userId = req.user._id;
   User.findById(userId)
     .then((user) => {
       if (!user) {
@@ -108,10 +108,10 @@ const getCurrentUser = (req, res, next) => {
           'Пользователь по указанному _id не найден.',
         );
       }
-      res.send(user);
+      res.status(200).send(user);
     })
     .catch((err) => {
-      // console.log(err.name);
+      console.log(err.name);
       if (err.name === 'CastError') {
         next(new ValidationError('Переданы некорректные данные.'));
       }
@@ -138,7 +138,7 @@ const updateProfile = (req, res, next) => {
           'Пользователь по указанному _id не найден.',
         );
       }
-      res.send(user);
+      res.status(200).send(user);
     })
     .catch((err) => {
       // console.log(err.name);
@@ -160,7 +160,7 @@ const updateAvatar = (req, res, next) => {
           'Пользователь по указанному _id не найден.',
         );
       }
-      res.send(user);
+      res.status(200).send(user);
     })
     .catch((err) => {
       // console.log(err.name);

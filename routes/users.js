@@ -1,7 +1,7 @@
 const userRouter = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 
-const { urlRegex } = require('../utils/constants');
+const urlRegex = require('../utils/constants');
 
 const {
   getUsers,
@@ -37,8 +37,7 @@ userRouter.patch(
   celebrate({
     body: Joi.object().keys({
       avatar: Joi.string()
-        .regex(RegExp(urlRegex))
-        .error(new Error('Введите корректный URL'))
+        .regex(urlRegex)
         .required(),
     }),
   }),

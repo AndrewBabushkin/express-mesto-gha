@@ -1,7 +1,7 @@
 const cardRouter = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 
-const { urlRegex } = require('../utils/constants');
+const urlRegex = require('../utils/constants');
 
 const {
   getCards,
@@ -18,8 +18,7 @@ cardRouter.post(
     body: Joi.object().keys({
       name: Joi.string().min(2).max(30).required(),
       link: Joi.string()
-        .regex(RegExp(urlRegex))
-        .error(new Error('Введите корректный URL'))
+        .regex(urlRegex)
         .required(),
     }),
   }),

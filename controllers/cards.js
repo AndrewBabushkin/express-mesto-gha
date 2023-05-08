@@ -18,7 +18,7 @@ const createCard = (req, res, next) => {
 
   Card.create({ name, link, owner: userId })
     .then((newCard) => {
-      res.send(newCard);
+      res.status(200).send(newCard);
       // console.log(newCard);
     })
     .catch((err) => {
@@ -37,9 +37,9 @@ const deleteCard = (req, res, next) => {
     .then((card) => {
       const ownerId = card.owner.id;
       if (ownerId !== userId) {
-        res.status(401).send({ message: 'Нет прав удалить данную карточку' });
+        res.status(403).send({ message: 'Нет прав удалить данную карточку' }); // передалать
       }
-      res.send(card);
+      res.status(200).send(card);
     })
     .catch(next);
 };
@@ -53,7 +53,7 @@ const addLikeCard = (req, res, next) => {
     { new: true },
   )
     .then((card) => {
-      res.send(card);
+      res.status(200).send(card);
     })
     .catch(next);
 };
@@ -66,7 +66,7 @@ const deleteLikeCard = (req, res, next) => {
     { new: true },
   )
     .then((card) => {
-      res.send(card);
+      res.status(200).send(card);
     })
     .catch(next);
 };
