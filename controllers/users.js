@@ -31,7 +31,7 @@ const createUser = (req, res, next) => {
       password: hash,
     }))
     .then((newUser) => {
-      console.log(newUser);
+      // console.log(newUser);
       res.status(200).send({
         user: {
           email: newUser.email,
@@ -42,7 +42,7 @@ const createUser = (req, res, next) => {
       });
     })
     .catch((err) => {
-      console.log(err.code);
+      // console.log(err.code);
       if (err.code === 11000) {
         next(
           new EmailExistsError(
@@ -111,7 +111,7 @@ const getCurrentUser = (req, res, next) => {
       res.status(200).send(user);
     })
     .catch((err) => {
-      console.log(err.name);
+      // console.log(err.name);
       if (err.name === 'CastError') {
         next(new ValidationError('Переданы некорректные данные.'));
       }
