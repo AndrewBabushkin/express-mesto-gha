@@ -1,19 +1,17 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-require('dotenv').config();
+const mongoose = require('mongoose');
 
 const ValidationError = require('../errors/ValidationError');
 const EmailExistsError = require('../errors/EmailExistsError');
 const AuthorisationError = require('../errors/AuthorisationError');
-const DocumentNotFoundError = require('../errors/DocumentNotFoundError');
+const checkUser = require('../middlewares/checkUser');
+const checkError = require('../middlewares/checkError');
 
-const { JWT_SECRET = 'JWT_SECRET' } = process.env;
-
+const config = require('../config');
 const User = require('../models/user');
 
 const createUser = (req, res, next) => {
-  // console.log(req.body);
-
   const {
     name,
     about,
@@ -32,7 +30,7 @@ const createUser = (req, res, next) => {
     }))
     .then((newUser) => {
       // console.log(newUser);
-      res.status(200).send({
+      res.status(201).send({
         user: {
           email: newUser.email,
           name: newUser.name,
@@ -42,18 +40,18 @@ const createUser = (req, res, next) => {
       });
     })
     .catch((err) => {
-      // console.log(err.code);
+      // console.log(err);
       if (err.code === 11000) {
         next(
           new EmailExistsError(
             'Пользователь с таким email уже зарегистрирован.',
           ),
         );
-      }
-      if (err.name === 'ValidationError') {
+      } else if (err instanceof mongoose.Error.ValidationError) {
         next(new ValidationError('Переданы некорректные данные.'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
@@ -64,7 +62,7 @@ const login = (req, res, next) => {
       if (!user) {
         throw new AuthorisationError('Неправильные почта или пароль.');
       }
-      const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
+      const token = jwt.sign({ _id: user._id }, config.jwtSecret, {
         expiresIn: '7d',
       });
       res.status(200).send({ token });
@@ -82,71 +80,26 @@ const getUsers = (req, res, next) => {
 const getUserId = (req, res, next) => {
   // console.log(req.params);
   User.findById(req.params.userId)
-    .then((user) => {
-      // console.log(user);
-      if (!user) {
-        throw new DocumentNotFoundError(
-          'Пользователь по указанному _id не найден.',
-        );
-      }
-      res.status(200).send(user);
-    })
-    .catch((err) => {
-      // console.log(err.name);
-      if (err.name === 'CastError') {
-        next(new ValidationError('Переданы некорректные данные.'));
-      }
-      next(err);
-    });
+    .then((user) => checkUser(res, user))
+    .catch(next);
 };
 const getCurrentUser = (req, res, next) => {
   const userId = req.user._id;
   User.findById(userId)
-    .then((user) => {
-      if (!user) {
-        throw new DocumentNotFoundError(
-          'Пользователь по указанному _id не найден.',
-        );
-      }
-      res.status(200).send(user);
-    })
-    .catch((err) => {
-      // console.log(err.name);
-      if (err.name === 'CastError') {
-        next(new ValidationError('Переданы некорректные данные.'));
-      }
-      next(err);
-    });
+    .then((user) => checkUser(res, user))
+    .catch(next);
 };
 
 const updateProfile = (req, res, next) => {
   const { name, about } = req.body;
   const userId = req.user;
-  // console.log(req.body);
-  // console.log(req.user);
-  // console.log(userId);
-  // console.log(res.user._id);
   User.findByIdAndUpdate(
     userId,
     { name, about },
     { new: true, runValidators: true },
   )
-    .then((user) => {
-      // console.log(user);
-      if (!user) {
-        throw new DocumentNotFoundError(
-          'Пользователь по указанному _id не найден.',
-        );
-      }
-      res.status(200).send(user);
-    })
-    .catch((err) => {
-      // console.log(err.name);
-      if (err.name === 'CastError' || err.name === 'ValidationError') {
-        next(new ValidationError('Переданы некорректные данные.'));
-      }
-      next(err);
-    });
+    .then((user) => checkUser(res, user))
+    .catch((err) => checkError(err, next));
 };
 
 const updateAvatar = (req, res, next) => {
@@ -154,21 +107,8 @@ const updateAvatar = (req, res, next) => {
   const userId = req.user;
 
   User.findByIdAndUpdate(userId, { avatar }, { new: true, runValidators: true })
-    .then((user) => {
-      if (!user) {
-        throw new DocumentNotFoundError(
-          'Пользователь по указанному _id не найден.',
-        );
-      }
-      res.status(200).send(user);
-    })
-    .catch((err) => {
-      // console.log(err.name);
-      if (err.name === 'CastError' || err.name === 'ValidationError') {
-        next(new ValidationError('Переданы некорректные данные.'));
-      }
-      next(err);
-    });
+    .then((user) => checkUser(res, user))
+    .catch((err) => checkError(err, next));
 };
 
 module.exports = {

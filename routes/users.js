@@ -1,7 +1,7 @@
 const userRouter = require('express').Router();
-const { celebrate, Joi } = require('celebrate');
+const { celebrate } = require('celebrate');
 
-const urlRegex = require('../utils/constants');
+const { UserIdValidation, updateProfileValidation, updateAvatarValidation } = require('../middlewares/routesValidation');
 
 const {
   getUsers,
@@ -15,32 +15,17 @@ userRouter.get('/', getUsers);
 userRouter.get('/me', getCurrentUser);
 userRouter.get(
   '/:userId',
-  celebrate({
-    params: Joi.object().keys({
-      userId: Joi.string().length(24).hex(),
-    }),
-  }),
+  celebrate(UserIdValidation),
   getUserId,
 );
 userRouter.patch(
   '/me',
-  celebrate({
-    body: Joi.object().keys({
-      name: Joi.string().min(2).max(30).required(),
-      about: Joi.string().min(2).max(30).required(),
-    }),
-  }),
+  celebrate(updateProfileValidation),
   updateProfile,
 );
 userRouter.patch(
   '/me/avatar',
-  celebrate({
-    body: Joi.object().keys({
-      avatar: Joi.string()
-        .regex(urlRegex)
-        .required(),
-    }),
-  }),
+  celebrate(updateAvatarValidation),
   updateAvatar,
 );
 

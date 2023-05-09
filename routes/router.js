@@ -1,6 +1,6 @@
 const router = require('express').Router();
 
-const PageNotFoundError = require('../errors/PageNotFoundError');
+const DocumentNotFoundError = require('../errors/DocumentNotFoundError');
 
 const userRouter = require('./users');
 const cardRouter = require('./cards');
@@ -14,6 +14,6 @@ router.use('/signup', regRouter);
 router.use('/signin', loginRouter);
 
 router.all('*', (req, res, next) => {
-  next(new PageNotFoundError('Страница не найдена!'));
+  next(new DocumentNotFoundError('Страница не найдена!'));
 });
 module.exports = router;
