@@ -8,6 +8,7 @@ const router = require('./routes/router');
 const limiter = require('./middlewares/ratelimit');
 const errorHandler = require('./middlewares/errorHandler');
 const config = require('./config');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const app = express();
 
@@ -20,7 +21,11 @@ mongoose.connect(config.connectDb, {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use(requestLogger);
+
 app.use(router);
+
+app.use(errorLogger);
 
 app.use(limiter);
 app.use(helmet());
