@@ -1,5 +1,5 @@
 const Card = require('../models/card');
-// const ValidationError = require('../errors/ValidationError');
+
 const checkCard = require('../middlewares/checkCard');
 const DocumentNotFoundError = require('../errors/DocumentNotFoundError');
 const NoRightsError = require('../errors/NoRightsError');

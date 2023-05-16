@@ -14,4 +14,7 @@ node_modules
 .idea
 .vscode
 
+# dotenv environment variables file(s)
 .env
+.env.*
+
